@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('layouts/header') %>
+
+<body>
+    <div class="container mt-5">
+        <form action="" method="post" style="max-width:300px;" class="m-auto">
+            <%= data %>
+            <div class="form-group">
+                <input class="form-control" type="text" placeholder="Name" name="name" value="<%= val.name %>">
+                <input class="form-control" type="text" placeholder="Email" name="email" value="<%= val.email %>">
+                <input class="form-control" type="password" placeholder="password" name="password" value="<%= val.password %>">
+                <input type="hidden" value="<%= val.id %>">
+                <button type="submit" class="btn-info form-control">Add</button>
+                <a href="/select" class="btn-danger form-control text-center">Back</a>
+            </div>
+        </form>
+    </div>
+
+    <%- include('layouts/footer') %>
+</body>
+
+</html>

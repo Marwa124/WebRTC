@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      /* form { background: #ccc; padding: 3px; position: fixed; bottom: 0; width: 81%; } */
+      /* form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; } */
+      /* form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; } */
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      .me{
+        background: #eee;
+        padding: 5px 10px;
+        text-align: right;
+      }
+      .you{
+        background-color: #09c !important;
+        color: #fff;
+        padding: 5px 10px;
+        width: calc(100% - 50px);
+      }
+    </style>
+  </head>
+  <body class="container">
+    <h2><%= data.email %></h2>
+
+    <ul id="messages" class="mb-5">
+      <div class="d-flex">
+
+      </div>
+    </ul>
+    <div class="spare"></div>
+    <form action="" class="d-flex">
+      <input id="m" class="form-control" autocomplete="off" />
+      <button class="btn btn-info">Send</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      $("form").submit(function(e){
+        e.preventDefault();
+        socket.emit("chat-message", {"send": $("#m").val(), "email": "<%= data.email %>", "name": "<%= data.name %>", "image": "<%= data.image %>"});
+        $("#m").val("");
+      });
+      socket.on('user message', function(val){
+        if(val.message == ''){
+          return false;
+        }
+        if(val.mail === "<%= data.email %>"){
+          $("#messages").append($("<li class='me'>").text(val.message + " : " + val.user));
+        }else{
+          // $("#messages").append($("<li class='you'>").text(val.user + " : " + val.message));
+          $("#messages").append($("<img class='ml-1 img-thumbnail rounded-circle float-left' src='/images/<%= data.image %>' width='40px' height='40px'>"))
+                        .append($("<li class='you float-left'>").text(val.user + " : " + val.message)).append($("<div class='clearfix'>"));
+        }
+      });
+
+      // Who is writing
+      $(document).ready(function() {
+        // Focus In
+        $("#m").focus(function(){
+          socket.emit("focus", {name: "<%= data.name %>"});
+        });
+        // Focus Out
+        $("#m").focusout(function(){
+          socket.emit("focus_out")
+        });
+      });
+      
+      socket.on("focus_emit", (user) => {
+        if(user.name_emit != "<%= data.name %>"){
+          $("#messages").append($("<div class='you' id='delete'></div>").text(user.name_emit + " is writing..."));
+        }
+        console.log("<%= data.name %>");
+        console.log("emit " + user.name_emit);
+      });
+      // Focus Out 
+      socket.on("focusOut_emit", () => {
+        $("#delete").remove("#delete");
+      });
+
+      //Load Chat-Messages
+      socket.emit("load", {msg: "gs"});
+      
+      var chat_loop = true;  // Prevent Repetition when reloading the page
+
+      socket.on("loaded-massages", (response) => {
+        if(chat_loop){
+          console.log(response.data[0]);
+
+          response.data.forEach( item => {
+            console.log(item);
+            
+            if(item.name === "<%= data.name %>"){
+              $("#messages").append($("<li class='me'>").text(item.message + " : " + item.name));
+            }else{
+              $("#messages").append($("<img class='ml-1 img-thumbnail rounded-circle float-left' src='/images/"+ item.image +"' width='40px' height='40px'>"))
+                            .append($("<li class='you float-left'>").text(item.name + " : " + item.message)).append($("<div class='clearfix'>"));
+            }
+          });
+
+          chat_loop = false;
+        }
+      });
+
+    </script>
+
+  </body>
+</html>

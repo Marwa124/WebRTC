@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('layouts/header') %>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="card m-auto" style="width: 30rem;">
+            <img class="d-flex justify-content-center m-auto" src="/images/<%= val.image %>" width="100px" height="100px">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name: <%= val.name %></li>
+                    <!-- <li class="list-group-item">Age: <%= val.age %></li> -->
+                </ul><br>
+                <label for="">Change your Image</label>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <%= typeof msg != 'undefined' ? msg : '' %>
+                    <div class="form-group d-flex">
+                        <input type="file" name="image" class="form-control-file" accept="image/png,image/jpeg,image/jpg">
+                        <button type="submit" class="btn-info btn">Save</button>
+                    </div>
+                <!-- <img class="card-img-top" src="/images/<%= typeof file != 'undefined' ? file : '' %>"> -->
+
+                </form>
+                <a href="/select" class="btn-danger form-control text-center">Back</a>
+                <!-- <a href="/upload" class="btn btn-primary"></a> -->
+            </div>
+          </div>
+    </div>
+
+    <%- include('layouts/footer') %>
+</body>
+
+</html>

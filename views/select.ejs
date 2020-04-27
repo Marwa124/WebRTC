@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('layouts/header') %>
+<body>
+  
+  <div class="mt-5 container">
+    
+    <a href="/form" class="btn btn-info mb-4">Add New</a>
+
+    <table class="table text-right">
+      <form action="update" method="post" id="formUpdate">
+        <tbody>
+          <% data.forEach(function(item){ %>
+          <tr id="trow">
+            <th class="row"><%- item.id %></th>
+            <td class="text-left pr-0">
+              <% if(item.image == 'undefined') { %>
+                <img class="ml-1 img-thumbnail rounded-circle" src="/images/52.png" width="80px" height="80px">
+              <% } else { %>
+                <img class="ml-1 img-thumbnail rounded-circle" src="/images/<%= item.image %>" width="80px" height="80px">
+              <% } %>
+            </td>
+            <td class="name"><%- item.name %></td>
+            <td class="age"><%- item.age %></td>
+            <td class="email"><%- item.email %></td>
+            <td>
+              <a href="/profile?id=<%= item.id %>" class="btn btn-success">Profile</a>
+            </td>
+            <td>
+              <a href="/edit?id=<%= item.id %>" class="btn btn-primary">Edit</a>
+            </td>
+            <td>
+              <a href="/delete?id=<%= item.id %>" onclick="return confirm('Are You Sure?')" class="btn btn-danger">Delete</a>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </form>
+      </table>
+
+  </div>
+  
+  <!-- <table class="table">
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>
+      </tr>
+    </tbody>
+  </table> -->
+
+  <%- include('layouts/footer') %>
+  <script>
+  
+    $(".update").on('click', function(e){
+      var name = $(this).closest("tr").find(".name").text();
+      var age = $(this).closest("tr").find(".age").text();
+      var image = $(this).closest("tr").find(".image").text();
+      
+      console.log(name);
+      console.log(age);
+      console.log(image);
+      
+      // document.getElementById("#formUpdate").submit();
+      // $("#formUpdate").submit();
+    });
+
+  </script>
+</body>
+</html>
